@@ -9,7 +9,7 @@ export class CloudinaryService {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'yoocha',
+          folder: 'passfort',
         },
         (error, result) => {
           if (error) return reject(error);
