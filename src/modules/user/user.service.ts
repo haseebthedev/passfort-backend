@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose';
 import { generateRandomDigits } from 'src/common/utils/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User } from './schema/user.schema';
 import { ChangePassDTO, ContactUsDTO, UpdateProfileDTO } from './dto';
 import { SignUpDTO } from '../auth/dto';
 import * as bcrypt from 'bcrypt';

@@ -3,7 +3,7 @@ import { ChangePassDTO, ContactUsDTO, UpdateProfileDTO } from './dto';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards';
 import { GetUser } from 'src/common/decorators';
-import { User } from './schemas/user.schema';
+import { User } from './schema/user.schema';
 import { MongoIdValidationPipe } from 'src/common/pipes/mongo-id.pipe';
 
 @UseGuards(JwtAuthGuard)
