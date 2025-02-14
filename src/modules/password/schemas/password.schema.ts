@@ -35,7 +35,7 @@ export class Password extends BaseSchema {
 }
 
 export type PasswordDocument = HydratedDocument<Password>;
-export const PasswordSchema = SchemaFactory.createForClass(Password);
+export const PasswordSchema = SchemaFactory.createForClass(Password).set('versionKey', false);
 
 PasswordSchema.index(
   { siteAddress: 1 },

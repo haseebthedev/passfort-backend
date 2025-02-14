@@ -1,9 +1,21 @@
-import { User } from '../user/schemas/user.schema';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GetUser } from 'src/common/decorators';
+import { User } from '../user/schemas/user.schema';
 import { JwtAuthGuard } from '../auth/guards';
 import { PasswordService } from './password.service';
 import { CreatePasswordDTO, UpdatePasswordDTO } from './dto';
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard)
 @Controller('password')
@@ -11,8 +23,12 @@ export class PasswordController {
   constructor(private passwordService: PasswordService) {}
 
   @Get('passwords')
-  async getAllPasswords(@GetUser() user: User) {
-    return await this.passwordService.getAllPasswords(user._id);
+  async getAllPasswords(
+    @GetUser() user: User,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return await this.passwordService.getAllPasswords(user._id, { page, limit });
   }
 
   @Post('create-password')

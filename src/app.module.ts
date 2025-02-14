@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { FileModule } from './modules/file/file.module';
 import { AppController } from './app.controller';
 import { PasswordModule } from './modules/password/password.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -15,6 +16,7 @@ import { ObjectIdInterceptor, ResultInterceptor } from './common/interceptors';
     AuthModule,
     UserModule,
     PasswordModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
