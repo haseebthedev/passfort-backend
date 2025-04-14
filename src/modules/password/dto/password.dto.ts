@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreatePasswordDTO {
   @IsNotEmpty()
-  @IsString()
-  type: string;
+  type: Types.ObjectId;
 
   @IsOptional()
   @IsString()

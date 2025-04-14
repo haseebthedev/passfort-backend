@@ -7,6 +7,7 @@ import { FileModule } from './modules/file/file.module';
 import { AppController } from './app.controller';
 import { PasswordModule } from './modules/password/password.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PasswordCategoryModule } from './modules/passwordCategory/passwordCategory.module';
 import { ObjectIdInterceptor, ResultInterceptor } from './common/interceptors';
 
 @Module({
@@ -17,6 +18,7 @@ import { ObjectIdInterceptor, ResultInterceptor } from './common/interceptors';
     UserModule,
     PasswordModule,
     FileModule,
+    PasswordCategoryModule,
   ],
   controllers: [AppController],
   providers: [

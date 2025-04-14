@@ -3,13 +3,13 @@ import { HydratedDocument } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import * as Paginate from 'mongoose-paginate-v2';
+import { Types } from 'mongoose';
 
 @Schema()
 export class Password extends BaseSchema {
-  @Prop({ default: null })
+  @Prop({ type: Types.ObjectId, ref: 'PasswordCategory', required: true })
   @IsNotEmpty()
-  @IsString()
-  type: string;
+  type: Types.ObjectId;
 
   @Prop({ default: null })
   @IsOptional()
@@ -41,5 +41,14 @@ PasswordSchema.index(
   { siteAddress: 1 },
   { unique: true, partialFilterExpression: { siteAddress: { $exists: true, $ne: null } } },
 );
+
+PasswordSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: (_, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+  },
+});
 
 PasswordSchema.plugin(Paginate);

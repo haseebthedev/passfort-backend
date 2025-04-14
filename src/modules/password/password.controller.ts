@@ -36,6 +36,11 @@ export class PasswordController {
     return await this.passwordService.createPassword(user._id, dto);
   }
 
+  @Get('grouped-by-category')
+  async getPasswordsGroupedByCategory(@GetUser() user: User) {
+    return await this.passwordService.getPasswordsGroupedByCategory(user._id);
+  }
+
   @Get(':id')
   async getPasswordById(@GetUser() user: User, @Param('id') passwordId: string) {
     return await this.passwordService.getPasswordById(user._id, passwordId);
