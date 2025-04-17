@@ -49,6 +49,12 @@ export class AuthService {
     if (!isMatch) {
       throw new UnauthorizedException('Either email or password is invalid');
     }
+
+     if (user.isFirstSignIn) {
+      await this.userService.findByIdandUpdate(user._id, { isFirstSignIn: false });
+      user.isFirstSignIn = false; 
+    }
+
     const token = await this.signToken(user._id, user.email);
     return { user, token: token.access_token };
   }

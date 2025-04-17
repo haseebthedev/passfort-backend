@@ -133,7 +133,6 @@ export class PasswordService {
         {
           $lookup: {
             from: 'passwords',
-            // let: { categoryId: '$_id' },
             let: { categoryId: { $toString: '$_id' } },
             pipeline: [
               {
@@ -171,5 +170,27 @@ export class PasswordService {
         { $sort: { 'type.title': 1 } },
       ])
       .toArray();
+  }
+
+  async searchPasswords(
+    userId: string,
+    searchTerm: string,
+    paginateOptions?: PaginateOptions,
+  ): Promise<PaginateResult<Password[]>> {
+    const searchQuery = {
+      userId,
+      $or: [
+        { siteAddress: { $regex: searchTerm, $options: 'i' } },
+        { platform: { $regex: searchTerm, $options: 'i' } },
+        { username: { $regex: searchTerm, $options: 'i' } },
+      ],
+    };
+
+    return await this.passwordModel.paginate(searchQuery, {
+      page: paginateOptions.page,
+      limit: paginateOptions.limit,
+      sort: { createdAt: -1 },
+      populate: { path: 'type' },
+    });
   }
 }

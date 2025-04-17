@@ -1,4 +1,4 @@
-import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ChangePassDTO {
   @IsString()
@@ -13,19 +13,27 @@ export class ChangePassDTO {
 export class UpdateProfileDTO {
   @IsString()
   @IsOptional()
-  profilePicture: string;
+  profilePicture?: string;
 
   @IsString()
   @IsOptional()
-  name: string;
+  name?: string;
 
   @IsDateString()
   @IsOptional()
-  dateOfBirth: string;
+  dateOfBirth?: string;
 
   @IsString()
   @IsOptional()
-  country: string;
+  country?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isFirstSignIn?: boolean
+
+  @IsBoolean()
+  @IsOptional()
+  isEmailVerified?: boolean
 }
 
 export class ContactUsDTO {

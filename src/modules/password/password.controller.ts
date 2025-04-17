@@ -31,6 +31,19 @@ export class PasswordController {
     return await this.passwordService.getAllPasswords(user._id, { page, limit });
   }
 
+  @Get('search')
+  async searchPasswords(
+    @GetUser() user: User,
+    @Query('q') searchTerm: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    if (!searchTerm) {
+      return await this.passwordService.getAllPasswords(user._id, { page, limit });
+    }
+    return await this.passwordService.searchPasswords(user._id, searchTerm, { page, limit });
+  }
+
   @Post('create-password')
   async createPassword(@GetUser() user: User, @Body() dto: CreatePasswordDTO) {
     return await this.passwordService.createPassword(user._id, dto);

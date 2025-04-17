@@ -23,6 +23,9 @@ export class User extends BaseSchema {
   @Prop({ default: false })
   isEmailVerified: boolean;
 
+  @Prop({ default: true }) 
+  isFirstSignIn: boolean;
+
   @Prop()
   @IsString()
   @IsNotEmpty()
@@ -42,6 +45,8 @@ export class User extends BaseSchema {
   @Prop({ default: null })
   @IsNotEmpty()
   country: string;
+
+
 }
 
 export type UserDocument = HydratedDocument<User>;
