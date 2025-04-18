@@ -40,4 +40,6 @@ export class UserController {
   async getUser(@Query('userId', MongoIdValidationPipe) userId: string) {
     return await this.userService.getUser(userId);
   }
+
+
 }

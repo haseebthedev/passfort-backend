@@ -23,10 +23,10 @@ export class Password extends BaseSchema {
   @IsOptional()
   username?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false }) 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  passwordText: string;
 
   @Prop({ required: true })
   @IsNotEmpty()

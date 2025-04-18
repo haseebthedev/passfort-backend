@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
-import { ForgotPassDTO, ResetPassDTO, SignInDTO, SignUpDTO } from './dto';
+import { ForgotPassDTO, ResetPassDTO, SignInDTO, SignUpDTO, VerifyOtpDTO } from './dto';
 import * as bcrypt from 'bcrypt';
 import { JWTDecodedUserI } from 'src/interfaces';
 
@@ -69,5 +69,29 @@ export class AuthService {
 
   async resetPassword(dto: ResetPassDTO): Promise<{ result: string }> {
     return await this.userService.resetPassword(dto.email, dto.authCode, dto.newPassword);
+  }
+
+  async verifyOtp(dto: VerifyOtpDTO) {
+    const { email, authCode } = dto;
+
+    const user = await this.userService.findByEmail(email);
+
+    console.log(email, authCode)
+
+    if (!user || !user.authCode || user.authCode !== authCode) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    // const isOtpExpired = new Date(user.otpExpires) < new Date();
+    // if (isOtpExpired) {
+    //   throw new BadRequestException('OTP has expired');
+    // }
+
+    // Optionally clear OTP once it's used
+  user.authCode = null
+    // user.otpExpires = null;
+    // await user.save();
+
+    return { message: 'OTP verified successfully' };
   }
 }

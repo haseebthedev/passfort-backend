@@ -66,6 +66,7 @@ export class UserService {
 
   async forgotPassword(email: string): Promise<{ result: string }> {
     const userInDB = await this.userModel.findOne({ email: email });
+    console.log(userInDB)
     if (!userInDB) throw new NotFoundException(`User with email ${email} not found`);
 
     const OTPCode = generateRandomDigits(6);
@@ -136,4 +137,6 @@ export class UserService {
     const user = await this.userModel.findById(userId);
     return user;
   }
+
+  
 }

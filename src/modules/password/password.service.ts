@@ -21,6 +21,7 @@ export class PasswordService {
         limit: paginateOptions.limit,
         sort: { createdAt: -1 },
         populate: { path: 'type' },
+        select: '+passwordText',
       },
     );
   }
@@ -38,12 +39,12 @@ export class PasswordService {
     }
 
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(dto.password, saltRounds);
+    const hashedPassword = await bcrypt.hash(dto.passwordText, saltRounds);
 
     const newPassword = new this.passwordModel({
       ...dto,
       type: new Types.ObjectId(dto.type),
-      password: hashedPassword,
+      passwordText: hashedPassword,
       userId,
     });
     return await newPassword.save();
@@ -58,11 +59,14 @@ export class PasswordService {
 
     const password = await this.passwordModel
       .findOne({ _id: new Types.ObjectId(cleanPasswordId), userId })
+      .select('+passwordText')
       .populate('type');
+
 
     if (!password) {
       throw new NotFoundException('Password not found');
     }
+
 
     return password;
   }
@@ -86,45 +90,6 @@ export class PasswordService {
 
     return { result: 'Password has been deleted successfully!' };
   }
-
-  // async getPasswordsGroupedByCategory(userId: string) {
-  //   return await this.passwordModel.aggregate([
-  //     { $match: { userId: userId.toString() } },
-  //     {
-  //       $lookup: {
-  //         from: 'passwordcategories',
-  //         let: { typeId: { $toObjectId: '$type' } },
-  //         pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$typeId'] } } }],
-  //         as: 'type',
-  //       },
-  //     },
-  //     { $unwind: '$type' },
-  //     {
-  //       $group: {
-  //         _id: '$type._id',
-  //         type: { $first: '$type' },
-  //         passwords: { $push: '$$ROOT' },
-  //       },
-  //     },
-  //     {
-  //       $project: {
-  //         _id: 0,
-  //         type: {
-  //           id: '$_id',
-  //           title: '$type.title',
-  //           createdAt: '$type.createdAt',
-  //           updatedAt: '$type.updatedAt',
-  //         },
-  //         passwords: {
-  //           siteAddress: 1,
-  //           username: 1,
-  //           password: 1,
-  //           userId: 1,
-  //         },
-  //       },
-  //     },
-  //   ]);
-  // }
 
   async getPasswordsGroupedByCategory(userId: string) {
     return await this.passwordModel.db

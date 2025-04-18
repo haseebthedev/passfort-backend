@@ -19,7 +19,7 @@ export class CreatePasswordDTO {
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  passwordText: string;
 }
 
 export class UpdatePasswordDTO {
@@ -41,5 +41,5 @@ export class UpdatePasswordDTO {
 
   @IsOptional()
   @IsString()
-  password?: string;
+  passwordText?: string;
 }

@@ -39,3 +39,11 @@ export class ResetPassDTO {
   @IsString()
   newPassword: string;
 }
+
+export class VerifyOtpDTO {
+  @IsString()
+  email: string;
+
+  @IsString()
+  authCode: string;
+}
