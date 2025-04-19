@@ -3,18 +3,29 @@ import { InjectModel } from '@nestjs/mongoose';
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Password, PasswordDocument } from './schemas/password.schema';
 import { CreatePasswordDTO, UpdatePasswordDTO } from './dto';
-import * as bcrypt from 'bcrypt';
+import * as CryptoJS from 'crypto-js';
 import { PasswordCategory, PasswordCategoryDocument } from '../passwordCategory/schemas/passwordCategory.schema';
 
 @Injectable()
 export class PasswordService {
+  private readonly encryptionKey = process.env.ENCRYPTION_KEY 
+
   constructor(
     @InjectModel(Password.name) private passwordModel: PaginateModel<PasswordDocument>,
     @InjectModel(PasswordCategory.name) private passwordCategoryModel: PaginateModel<PasswordCategoryDocument>,
   ) {}
 
-  async getAllPasswords(userId: string, paginateOptions?: PaginateOptions): Promise<PaginateResult<Password[]>> {
-    return await this.passwordModel.paginate(
+  private encryptPassword(password: string): string {
+    return CryptoJS.AES.encrypt(password, this.encryptionKey).toString();
+  }
+
+  private decryptPassword(encryptedPassword: string): string {
+    const bytes = CryptoJS.AES.decrypt(encryptedPassword, this.encryptionKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  }
+
+  async getAllPasswords(userId: string, paginateOptions?: PaginateOptions): Promise<PaginateResult<PasswordDocument>> {
+    const result = await this.passwordModel.paginate(
       { userId },
       {
         page: paginateOptions.page,
@@ -24,6 +35,26 @@ export class PasswordService {
         select: '+passwordText',
       },
     );
+
+    const decryptedResult: PaginateResult<PasswordDocument> = {
+      docs: result.docs.map(password => {
+        const decryptedPassword = password.toObject();
+        decryptedPassword.passwordText = this.decryptPassword(password.passwordText);
+        return decryptedPassword as PasswordDocument;
+      }),
+      totalDocs: result.totalDocs,
+      limit: result.limit,
+      totalPages: result.totalPages,
+      page: result.page,
+      pagingCounter: result.pagingCounter,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      offset: result.offset,
+    };
+
+    return decryptedResult;
   }
 
   async createPassword(userId: string, dto: CreatePasswordDTO): Promise<Password> {
@@ -38,13 +69,12 @@ export class PasswordService {
       }
     }
 
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(dto.passwordText, saltRounds);
+    const encryptedPassword = this.encryptPassword(dto.passwordText);
 
     const newPassword = new this.passwordModel({
       ...dto,
       type: new Types.ObjectId(dto.type),
-      passwordText: hashedPassword,
+      passwordText: encryptedPassword,
       userId,
     });
     return await newPassword.save();
@@ -62,16 +92,20 @@ export class PasswordService {
       .select('+passwordText')
       .populate('type');
 
-
     if (!password) {
       throw new NotFoundException('Password not found');
     }
 
-
-    return password;
+    const decryptedPassword = password.toObject();
+    decryptedPassword.passwordText = this.decryptPassword(password.passwordText);
+    return decryptedPassword;
   }
 
   async updatePasswordById(userId: string, passwordId: string, dto: UpdatePasswordDTO): Promise<Password> {
+    if (dto.passwordText) {
+      dto.passwordText = this.encryptPassword(dto.passwordText);
+    }
+
     const password = await this.passwordModel
       .findOneAndUpdate({ _id: passwordId, userId }, { $set: dto }, { new: true })
       .populate('type');
