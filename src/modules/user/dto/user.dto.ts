@@ -34,6 +34,10 @@ export class UpdateProfileDTO {
   @IsBoolean()
   @IsOptional()
   isEmailVerified?: boolean
+
+  @IsBoolean()
+  @IsNotEmpty()
+  biometricEnabled?: boolean;
 }
 
 export class ContactUsDTO {

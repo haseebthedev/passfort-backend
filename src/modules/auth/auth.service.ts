@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 import { User } from '../user/schemas/user.schema';
@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { ForgotPassDTO, ResetPassDTO, SignInDTO, SignUpDTO, VerifyOtpDTO } from './dto';
 import * as bcrypt from 'bcrypt';
 import { JWTDecodedUserI } from 'src/interfaces';
+import { UpdateProfileDTO } from '../user/dto';
 
 @Injectable()
 export class AuthService {
@@ -51,6 +52,7 @@ export class AuthService {
     }
 
      if (user.isFirstSignIn) {
+      // send verification mail
       await this.userService.findByIdandUpdate(user._id, { isFirstSignIn: false });
       user.isFirstSignIn = false; 
     }

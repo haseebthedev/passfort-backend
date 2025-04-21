@@ -3,7 +3,7 @@ import { FilterQuery, PaginateModel, PaginateOptions } from 'mongoose';
 import { generateRandomDigits } from 'src/common/utils/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
-import { ChangePassDTO, ContactUsDTO, UpdateProfileDTO } from './dto';
+import { ChangePassDTO, ContactUsDTO, UpdateProfileDTO, } from './dto';
 import { SignUpDTO } from '../auth/dto';
 import * as bcrypt from 'bcrypt';
 import * as nodemailer from 'nodemailer';

@@ -46,6 +46,8 @@ export class User extends BaseSchema {
   @IsNotEmpty()
   country: string;
 
+  @Prop({ default: false })
+  biometricEnabled: boolean;
 
 }
 

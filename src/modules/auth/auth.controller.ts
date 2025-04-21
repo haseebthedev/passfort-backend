@@ -1,6 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ForgotPassDTO, ResetPassDTO, SignInDTO, SignUpDTO, VerifyOtpDTO } from './dto';
+import { GetUser } from 'src/common/decorators';
+import { User } from '../user/schemas/user.schema';
+import { UpdateProfileDTO } from '../user/dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,4 +33,5 @@ export class AuthController {
   verifyOtp(@Body() dto: VerifyOtpDTO) {
     return this.authService.verifyOtp(dto);
   }
+
 }

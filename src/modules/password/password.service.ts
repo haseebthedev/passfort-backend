@@ -40,6 +40,8 @@ export class PasswordService {
       docs: result.docs.map(password => {
         const decryptedPassword = password.toObject();
         decryptedPassword.passwordText = this.decryptPassword(password.passwordText);
+        decryptedPassword.id = decryptedPassword._id;
+        delete decryptedPassword._id;
         return decryptedPassword as PasswordDocument;
       }),
       totalDocs: result.totalDocs,
@@ -98,6 +100,8 @@ export class PasswordService {
 
     const decryptedPassword = password.toObject();
     decryptedPassword.passwordText = this.decryptPassword(password.passwordText);
+    decryptedPassword.id = decryptedPassword._id;
+    delete decryptedPassword._id;
     return decryptedPassword;
   }
 
